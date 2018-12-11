@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-uart_handle_t uart_handle;
+//uart_handle_t uart_handle;
 
 /* Function to check whether the receiver is
  * available to receive a new character
@@ -12,6 +12,7 @@ uart_handle_t uart_handle;
  */
 void uart_rx_available( void )
 {
+	/*
 	if( UART0_S1 & UART0_S1_RDRF_MASK )
 	{
 		uart_handle.state = UART_STATE_READY;
@@ -20,6 +21,7 @@ void uart_rx_available( void )
 	{
 		uart_handle.state = UART_STATE_BUSY_RX;
 	}
+	*/
 	return;
 }
 
@@ -51,6 +53,7 @@ char uart_rx_char( void )
  */
 void uart_tx_available( void )
 {
+	/*
 	if( UART0_S1 & UART_S1_TDRE_MASK )
 	{
 		uart_handle.state = UART_STATE_READY;
@@ -59,6 +62,7 @@ void uart_tx_available( void )
 	{
 		uart_handle.state = UART_STATE_BUSY_TX;
 	}
+	*/
 	return;
 }
 
@@ -83,6 +87,18 @@ void uart_tx_char( char ch )
 	return;
 }
 
+void uart_tx_num( uint32_t num )
+{
+	char tmp[10];
+	sprintf( tmp, "%d", num );
+	int i = 0;
+	while( tmp[i] != '\0' )
+	{
+		uart_tx_char( tmp[i] );
+		i++;
+	}
+	return;
+}
 /* Initializes UART Peripheral in Interrupt Mode
  * @param[in]:	void
  * @returns:		void
@@ -90,8 +106,8 @@ void uart_tx_char( char ch )
 void uart_init( void  )
 {
 	/* Configure UART Instance */
-	uart_handle.instance	= UART0;
-	uart_handle.state 		= UART_STATE_READY;
+	//uart_handle.instance	= UART0;
+	//uart_handle.state 		= UART_STATE_READY;
 
 	/* enable clock for UART0 */
 	SIM_SCGC4 |= SIM_SCGC4_UART0_MASK;
@@ -114,10 +130,6 @@ void uart_init( void  )
 	PORTA_PCR2 	= PORT_PCR_MUX(0x2);
 	PORTA_PCR1 	= PORT_PCR_MUX(0x2);
 
-#if _NON_BLOCKING_
-	/* Enable interrupts */
-	UART0_C2	|= UART_C2_RIE_MASK;
-#endif
 	/* Enable receiver and transmitter */
 	UART0_C2 	|= (UART0_C2_RE_MASK | UART0_C2_TE_MASK);
 
@@ -132,7 +144,7 @@ void uart_init( void  )
 void enable_UART0_DMA_request( void )
 {
 	// Disable UART0 before managing configuration
-	UART0_C2 &= ~(UART0_C2_TE_MASK | UART0_C2_RE_MASK);
+	UART0_C2 &= ~(UART0_C2_TE_MASK | UART0_C2_RE_MASK );
 
 	/* Enable Receiver Interrupt */
 	UART0_C2 |= UART0_C2_RIE_MASK;
@@ -159,6 +171,7 @@ void write( char* p_message )
 	}
 	return;
 }
+
 
 #if _NON_BLOCKING_
 /* UART0 interrupt handler */

@@ -9,12 +9,7 @@
 #define UART_DRIVER_H
 
 #include "memory_map.h"
-#include "ring.h"
 #include "settings.h"
-
-#define UART_RDRF 0x20
-#define UART_TC   0x40
-#define UART_TDRE 0x80
 
 typedef enum
 {
@@ -61,6 +56,8 @@ void uart_tx_available( void );
  * @returns:		void
  */
 void uart_tx_char( char c );
+
+void uart_tx_num( uint32_t num );
 
 /* Initializes UART Peripheral in Interrupt Mode
  * @param[in]:	void
