@@ -8,6 +8,7 @@
 #include "memory_map.h"
 #include "uart_driver.h"
 #include "dma_driver.h"
+#include "adc_driver.h"
 #include "LED.h"
 
 extern uart_handle_t uart_handle;
@@ -28,12 +29,22 @@ int main( void )
 
 	__disable_irq();        /* global disable IRQs */
 	NVIC_EnableIRQ( DMA0_IRQn );
+	/* DMA Init */
 	dma_init();
 	write( "DMA is initialized\r\n" );
+#if _ADC_
+	/* ADC0 Init */
+	adc_init();
+	write( "ADC0-DMA connection established\r\n" );
+#else
 	enable_UART0_DMA_request();
 	write( "UART0-DMA connection established\r\n" );
+#endif
+
+/* It turns out we don't need UART0 interrupts for DMA
 	NVIC_EnableIRQ( UART0_IRQn );
 	NVIC_SetPriority( UART0_IRQn, 2 );
+*/
 	__enable_irq();					/* global enable IRQs */
 
 	int red_counter 	= 0;
