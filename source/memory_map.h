@@ -132,6 +132,37 @@
 #define SIM_SRVCOP_REG(base)                     ((base)->SRVCOP)
 
 /* ADC */
+/* ADC - Register accessors */
+#define ADC_SC1_REG(base,index)                  ((base)->SC1[index])
+#define ADC_CFG1_REG(base)                       ((base)->CFG1)
+#define ADC_CFG2_REG(base)                       ((base)->CFG2)
+#define ADC_R_REG(base,index)                    ((base)->R[index])
+#define ADC_CV1_REG(base)                        ((base)->CV1)
+#define ADC_CV2_REG(base)                        ((base)->CV2)
+#define ADC_SC2_REG(base)                        ((base)->SC2)
+#define ADC_SC3_REG(base)                        ((base)->SC3)
+#define ADC_OFS_REG(base)                        ((base)->OFS)
+#define ADC_PG_REG(base)                         ((base)->PG)
+#define ADC_MG_REG(base)                         ((base)->MG)
+#define ADC_CLPD_REG(base)                       ((base)->CLPD)
+#define ADC_CLPS_REG(base)                       ((base)->CLPS)
+#define ADC_CLP4_REG(base)                       ((base)->CLP4)
+#define ADC_CLP3_REG(base)                       ((base)->CLP3)
+#define ADC_CLP2_REG(base)                       ((base)->CLP2)
+#define ADC_CLP1_REG(base)                       ((base)->CLP1)
+#define ADC_CLP0_REG(base)                       ((base)->CLP0)
+#define ADC_CLMD_REG(base)                       ((base)->CLMD)
+#define ADC_CLMS_REG(base)                       ((base)->CLMS)
+#define ADC_CLM4_REG(base)                       ((base)->CLM4)
+#define ADC_CLM3_REG(base)                       ((base)->CLM3)
+#define ADC_CLM2_REG(base)                       ((base)->CLM2)
+#define ADC_CLM1_REG(base)                       ((base)->CLM1)
+#define ADC_CLM0_REG(base)                       ((base)->CLM0)
+
+/* ADC - Register array accessors */
+#define ADC0_SC1(index)                          ADC_SC1_REG(ADC0,index)
+#define ADC0_R(index)                            ADC_R_REG(ADC0,index)
+
 /* ADC - Register instance definitions */
 #define ADC0_SC1A                                ADC_SC1_REG(ADC0,0)
 #define ADC0_SC1B                                ADC_SC1_REG(ADC0,1)
@@ -161,9 +192,6 @@
 #define ADC0_CLM1                                ADC_CLM1_REG(ADC0)
 #define ADC0_CLM0                                ADC_CLM0_REG(ADC0)
 
-/* ADC - Register array accessors */
-#define ADC0_SC1(index)                          ADC_SC1_REG(ADC0,index)
-#define ADC0_R(index)                            ADC_R_REG(ADC0,index)
 
 /* PORT */
 /* PORT - Register accessors */
@@ -405,27 +433,6 @@
 #define GPIOE_PTOR                               GPIO_PTOR_REG(GPIOE)
 #define GPIOE_PDIR                               GPIO_PDIR_REG(GPIOE)
 #define GPIOE_PDDR                               GPIO_PDDR_REG(GPIOE)
-/* NVIC */
 
-/* NVIC - Register accessors */
-#define NVIC_ISER_REG(base)                      ((base)->ISER)
-#define NVIC_ICER_REG(base)                      ((base)->ICER)
-#define NVIC_ISPR_REG(base)                      ((base)->ISPR)
-#define NVIC_ICPR_REG(base)                      ((base)->ICPR)
-#define NVIC_IP_REG(base,index)                  ((base)->IP[index])
-
-/* NVIC - Register instance definitions */
-#define NVIC_ISER                                NVIC_ISER_REG(NVIC_BASE_PTR)
-#define NVIC_ICER                                NVIC_ICER_REG(NVIC_BASE_PTR)
-#define NVIC_ISPR                                NVIC_ISPR_REG(NVIC_BASE_PTR)
-#define NVIC_ICPR                                NVIC_ICPR_REG(NVIC_BASE_PTR)
-#define NVIC_IPR0                                NVIC_IP_REG(NVIC_BASE_PTR,0)
-#define NVIC_IPR1                                NVIC_IP_REG(NVIC_BASE_PTR,1)
-#define NVIC_IPR2                                NVIC_IP_REG(NVIC_BASE_PTR,2)
-#define NVIC_IPR3                                NVIC_IP_REG(NVIC_BASE_PTR,3)
-#define NVIC_IPR4                                NVIC_IP_REG(NVIC_BASE_PTR,4)
-#define NVIC_IPR5                                NVIC_IP_REG(NVIC_BASE_PTR,5)
-#define NVIC_IPR6                                NVIC_IP_REG(NVIC_BASE_PTR,6)
-#define NVIC_IPR7                                NVIC_IP_REG(NVIC_BASE_PTR,7)
 
 #endif /* MEMORY_MAP_H_ */
