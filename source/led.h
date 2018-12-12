@@ -3,8 +3,6 @@
 
 #include "memory_map.h"
 
-#define PIN(x)				(1 << x)
-
 #define RED						(18)
 #define RED_SHIFT			(1 << RED)
 #define GREEN					(19)
@@ -25,7 +23,5 @@
 #define BLUE_TOGGLE		(GPIOD_PTOR = BLUE_SHIFT)
 
 void LED_init( void );
-
-void LED_toggle( void );
 
 #endif /* LED_H_ */

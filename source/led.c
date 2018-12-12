@@ -41,27 +41,7 @@ void LED_init( void )
 //	PTD->PDDR |= 0x02;          /* make PTD1 as output pin */
 
 	/* Turn on Blue LED */
-	GPIOD_PDDR	|= BLUE_SHIFT;
+	GPIOD_PSOR	|= BLUE_SHIFT;
 //	PTD->PSOR = 0x02;           /* turn off blue LED */
-	return;
-}
-
-void LED_toggle( void )
-{
-	static int value = 0;
-	if( value == 0)    /* use bit 0 of value to control red LED */
-	PTB->PCOR = 0x40000;    /* turn on red LED */
-	else
-	 PTB->PSOR = 0x40000;    /* turn off red LED */
-	if (value == 1)    /* use bit 1 of value to control green LED */
-	PTB->PCOR = 0x80000;    /* turn on green LED */
-	else
-	PTB->PSOR = 0x80000;    /* turn off green LED */
-	if (value == 2)    /* use bit 2 of value to control blue LED */
-	PTD->PCOR = 0x02;       /* turn on blue LED */
-	else
-	PTD->PSOR = 0x02;       /* turn off blue LED */
-	value++;
-	if (value == 3) value = 0;
 	return;
 }
