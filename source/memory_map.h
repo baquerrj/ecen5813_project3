@@ -10,6 +10,8 @@
 
 #include "MKL25Z4.h"
 
+/* Memory Map Header with register accessor macros */
+
 /* UART0 */
 /* UART0 - Register accessors */
 #define UART0_BDH_REG(base)                      ((base)->BDH)
