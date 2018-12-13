@@ -4,14 +4,12 @@
  * 			https://electrovolt.ir/wp-content/uploads/2017/07/Freescale_ARM_Cortex_M_Embedded_ElectroVolt.ir_.pdf
  *
 */
-//#include <MKL25Z4.H>
 #include "memory_map.h"
 #include "uart_driver.h"
 #include "dma_driver.h"
 #include "adc_driver.h"
 #include "LED.h"
-
-extern uart_handle_t uart_handle;
+#include "gpio.h"
 
 int main( void )
 {
@@ -21,7 +19,12 @@ int main( void )
 								SIM_SCGC5_PORTD_MASK |
 								SIM_SCGC5_PORTE_MASK);
 	MCG->C4 = 0x20;
+
+	/* LED Init */
 	LED_init();
+
+	/* PORTE PIN 5 Init as GPIO */
+	gpio_init();
 
 	/* UART0 Init */
 	uart_init();
@@ -29,61 +32,29 @@ int main( void )
 
 	__disable_irq();        /* global disable IRQs */
 	NVIC_EnableIRQ( DMA0_IRQn );
+
 	/* DMA Init */
 	dma_init();
 	write( "DMA is initialized\r\n" );
-#if _ADC_
+
 	/* ADC0 Init */
 	adc_init();
 	write( "ADC0-DMA connection established\r\n" );
-#else
+
+#ifdef _NON_BLOCKING_
 	enable_UART0_DMA_request();
 	write( "UART0-DMA connection established\r\n" );
-#endif
-
-/* It turns out we don't need UART0 interrupts for DMA
 	NVIC_EnableIRQ( UART0_IRQn );
 	NVIC_SetPriority( UART0_IRQn, 2 );
-*/
-	__enable_irq();					/* global enable IRQs */
+#endif
 
-	int red_counter 	= 0;
-	int green_counter = 0;
-	int blue_counter 	= 0;
-	int purp_counter	= 0;
+	__enable_irq();					/* global enable IRQs */
 	while (1)
 	{
-		red_counter  	= 0;
-		green_counter	= 0;
-		blue_counter 	= 0;
-		purp_counter	= 0;
-		while( blue_counter <  900000 )
-		{
-			BLUE_TOGGLE;
-		  blue_counter++;
-		}
-		BLUE_OFF;
-		while( green_counter < 300000 )
-		{
-			GREEN_TOGGLE;
-			green_counter++;
-		}
-		GREEN_OFF;
-		while( red_counter < 600000 )
-		{
-			RED_TOGGLE;
-		  red_counter++;
-		}
-		RED_OFF;
+		/* start conversion on channel 26 temperature */
+		ADC0_SC1A = 0x20;
+		while(!(ADC0_SC1A & 0x80)) { } /* wait for COCO */
 
-		/* Make purple */
-		RED_ON;
-		BLUE_ON;
-		while( purp_counter < 1000000 )
-		{
-			purp_counter++;
-		}
-		RED_OFF;
 	}
 	return 1;
 }
