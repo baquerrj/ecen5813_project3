@@ -10,10 +10,10 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Function called by ISR to receive character
+/* Receives a character from UART0
  *
- * @param[in]:		void
- * @returns:			void
+ * @param[in]:	void
+ * @returns:		char received
  */
 char uart_rx_char( void )
 {
@@ -23,10 +23,9 @@ char uart_rx_char( void )
 	return UART0_D;
 }
 
-/* Function called by ISR to transmit a
- * character
+/* Transmist a character using UART0
  *
- * @param[in]:	c			character to send
+ * @param[in]:	c	char to transmit
  * @returns:		void
  */
 void uart_tx_char( char ch )
