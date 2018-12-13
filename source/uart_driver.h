@@ -15,7 +15,7 @@
 /* Receives a character from UART0
  *
  * @param[in]:	void
- * @returns:		charm received
+ * @returns:		char received
  */
 char uart_rx_char( void );
 
@@ -26,7 +26,8 @@ char uart_rx_char( void );
  */
 void uart_tx_char( char c );
 
-/* Initializes UART Peripheral in Interrupt Mode
+/* Initializes UART Peripheral in Polling Mode
+ * Or Interrupt Mode if _NON_BLOCKING_ is defined
  * @param[in]:	void
  * @returns:		void
  */
