@@ -12,14 +12,11 @@
 #include "settings.h"
 #include <stdint.h>
 
-#if _ADC_
 #define DMA_ENTRY_SIZE	(sizeof(uint16_t))
-#define DMA_ENTRIES			(8)
+#define DMA_ENTRIES			(64)
 #define DMA_BUFFER_SIZE (DMA_ENTRIES * DMA_ENTRY_SIZE)
-#else
-#define DMA_ENTRY_SIZE	(sizeof(uint8_t))
-#define DMA_ENTRIES			(16)
-#define DMA_BUFFER_SIZE (DMA_ENTRIES * DMA_ENTRY_SIZE)
+
+#define DMA_ALPHA_SHIFT(x) (x >> 1)
 
 /* Configure DMA for ADC Operation
  * @param[in]:	void
