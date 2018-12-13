@@ -1,29 +1,14 @@
+/*
+ * uart_driver.c
+ * RES: https://github.com/niekiran/MasteringMCU.git
+ *
+ *  Created on: Dec 5, 2018
+ *      Author: Roberto Baquerizo, Vance Farren
+ */
+
 #include "uart_driver.h"
 #include <stdio.h>
 #include <string.h>
-
-//uart_handle_t uart_handle;
-
-/* Function to check whether the receiver is
- * available to receive a new character
- *
- * @param[in]:	void
- * @returns:		void
- */
-void uart_rx_available( void )
-{
-	/*
-	if( UART0_S1 & UART0_S1_RDRF_MASK )
-	{
-		uart_handle.state = UART_STATE_READY;
-	}
-	else
-	{
-		uart_handle.state = UART_STATE_BUSY_RX;
-	}
-	*/
-	return;
-}
 
 /* Function called by ISR to receive character
  *
@@ -32,38 +17,10 @@ void uart_rx_available( void )
  */
 char uart_rx_char( void )
 {
-	//uart_handle.state = UART_STATE_RESET;
-/*
-	while( uart_handle.state == UART_STATE_BUSY_RX )
-	{
-		uart_rx_available();
-	}
-*/
 	while( !(UART0_S1 & UART0_S1_RDRF_MASK) );
 
 	/* Return received character */
 	return UART0_D;
-}
-
-/* Function to check whether the transmitter is available
- * to accept a new character for transmission
- *
- * @param[in]:		void
- * @returns:			void
- */
-void uart_tx_available( void )
-{
-	/*
-	if( UART0_S1 & UART_S1_TDRE_MASK )
-	{
-		uart_handle.state = UART_STATE_READY;
-	}
-	else
-	{
-		uart_handle.state = UART_STATE_BUSY_TX;
-	}
-	*/
-	return;
 }
 
 /* Function called by ISR to transmit a
@@ -74,41 +31,20 @@ void uart_tx_available( void )
  */
 void uart_tx_char( char ch )
 {
-	//uart_handle.state = UART_STATE_RESET;
-/*	while( uart_handle.state == UART_STATE_BUSY_TX )
-	{
-		uart_tx_available();
-	}
-*/
 	while( !(UART0_S1 & UART0_S1_TDRE_MASK) );
 
 	/* Send character */
-	UART0_D = (uint8_t)ch;
+	UART0_D = ch;
 	return;
 }
 
-void uart_tx_num( uint32_t num )
-{
-	char tmp[10];
-	sprintf( tmp, "%d", num );
-	int i = 0;
-	while( tmp[i] != '\0' )
-	{
-		uart_tx_char( tmp[i] );
-		i++;
-	}
-	return;
-}
-/* Initializes UART Peripheral in Interrupt Mode
+/* Initializes UART Peripheral in Polling Mode
+ * Or Interrupt Mode if _NON_BLOCKING_ is defined
  * @param[in]:	void
  * @returns:		void
  */
 void uart_init( void  )
 {
-	/* Configure UART Instance */
-	//uart_handle.instance	= UART0;
-	//uart_handle.state 		= UART_STATE_READY;
-
 	/* enable clock for UART0 */
 	SIM_SCGC4 |= SIM_SCGC4_UART0_MASK;
 
@@ -133,6 +69,10 @@ void uart_init( void  )
 	/* Enable receiver and transmitter */
 	UART0_C2 	|= (UART0_C2_RE_MASK | UART0_C2_TE_MASK);
 
+#ifdef _NON_BLOCKING_
+	/* Enable Interrupts */
+		UART0_C2 |= (UART0_C2_RIE_MASK | UART0_C2_TIE_MASK);
+#endif
 	return;
 }
 
@@ -144,7 +84,7 @@ void uart_init( void  )
 void enable_UART0_DMA_request( void )
 {
 	// Disable UART0 before managing configuration
-	UART0_C2 &= ~(UART0_C2_TE_MASK | UART0_C2_RE_MASK );
+	UART0_C2 &= ~(UART0_C2_TE_MASK | UART0_C2_RE_MASK);
 
 	/* Enable Receiver Interrupt */
 	UART0_C2 |= UART0_C2_RIE_MASK;
@@ -172,8 +112,7 @@ void write( char* p_message )
 	return;
 }
 
-
-#if _NON_BLOCKING_
+#ifdef _NON_BLOCKING_
 /* UART0 interrupt handler */
 void UART0_IRQHandler( void )
 {
@@ -182,13 +121,15 @@ void UART0_IRQHandler( void )
 	if( UART0_S1 & UART0_S1_RDRF_MASK )
 	{
 		c = uart_rx_char();
-		if( (UART0_S1 & UART0_S1_TDRE_MASK) ||
-				(UART0_S1 & UART0_S1_TC_MASK) )
-		{
-			uart_tx_char( c );
-		}
+	}
+	if( (UART0_S1 & UART0_S1_TDRE_MASK) ||
+			(UART0_S1 & UART0_S1_TC_MASK) )
+	{
+		uart_tx_char( c );
 	}
 	return;
 }
 #endif
+
+
 

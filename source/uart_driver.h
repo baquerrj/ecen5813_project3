@@ -1,8 +1,9 @@
 /*
+ * uart_driver.h
  * RES: https://github.com/niekiran/MasteringMCU.git
  *
- *
- *
+ *  Created on: Dec 5, 2018
+ *      Author: Roberto Baquerizo, Vance Farren
  */
 
 #ifndef UART_DRIVER_H
@@ -11,59 +12,32 @@
 #include "memory_map.h"
 #include "settings.h"
 
-typedef enum
-{
-  UART_STATE_RESET       = 0x00,    /*!< Peripheral is not yet Initialized                  */
-  UART_STATE_READY       = 0x01,    /*!< Peripheral Initialized and ready for use           */
-  UART_STATE_BUSY        = 0x02,    /*!< an internal process is ongoing                     */
-  UART_STATE_BUSY_TX     = 0x03,    /*!< Data Transmission process is ongoing               */
-  UART_STATE_BUSY_RX     = 0x04,    /*!< Data Reception process is ongoing                  */
-} uart_state_t;
-
-typedef struct
-{
-	UART0_Type*			instance;	/* UART registers base address */
-	uart_state_t		state;			/* Holds current state of UART Peripheral as defined in uart_stat_t */
-} uart_handle_t;
-
-/* Function to check whether the receiver is
- * available to receive a new character
+/* Receives a character from UART0
  *
  * @param[in]:	void
- * @returns:		void
- */
-void uart_rx_available( void );
-
-/* Function called by ISR to receive character
- *
- * @param[in]:	void
- * @returns:		void
+ * @returns:		charm received
  */
 char uart_rx_char( void );
 
-/* Function to check whether the transmitter is available
- * to accept a new character for transmission
+/* Transmist a character using UART0
  *
- * @param[in]:	void
- * @returns:		void
- */
-void uart_tx_available( void );
-
-/* Function called by ISR to transmit a
- * character
- *
- * @param[in]:	c			character to send
+ * @param[in]:	c	char to transmit
  * @returns:		void
  */
 void uart_tx_char( char c );
-
-void uart_tx_num( uint32_t num );
 
 /* Initializes UART Peripheral in Interrupt Mode
  * @param[in]:	void
  * @returns:		void
  */
 void uart_init( void );
+
+/* Enable UART0-DMA Connection
+ *
+ * @param[in]:	void
+ * @returns:		void
+ */
+void enable_UART0_DMA_request( void );
 
 /* Writes string pointed to p_message
  * Calls uart_tx_char() to transmit character
@@ -72,12 +46,5 @@ void uart_init( void );
  * @returns:		void
  */
 void write( char* p_message );
-
-/* Enable UART0-DMA Connection
- *
- * @param[in]:	void
- * @returns:		void
- */
-void enable_UART0_DMA_request( void );
 
 #endif /* UART_DRIVER_H */
