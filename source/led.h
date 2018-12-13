@@ -22,6 +22,11 @@
 #define BLUE_OFF			(GPIOD_PSOR	= BLUE_SHIFT)
 #define BLUE_TOGGLE		(GPIOD_PTOR = BLUE_SHIFT)
 
+/* Initialize LED's of KL25Z FRDM Board
+ *
+ * @param[in]:		void
+ * @returns:			void
+ */
 void LED_init( void );
 
 #endif /* LED_H_ */
