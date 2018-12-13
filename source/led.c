@@ -1,6 +1,10 @@
-//#include <MKL25Z4.H>
-#include "led.h"
+/*
+ * led.c
+ *  Created on: Dec 6, 2018
+ *      Author: Roberto Baquerizo, Vance Farren
+ */
 
+#include "led.h"
 
 /* Initialize LED's of KL25Z FRDM Board
  *
