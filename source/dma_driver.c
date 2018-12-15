@@ -177,7 +177,6 @@ void DMA0_IRQHandler( void )
 	}
 #endif
 	DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE_MASK;
-	upper_half_full = 0;
 	lower_half_full = 1;
 	/* Configure DMA to be ready for next interrupt */
 	//DMA_DSR_BCR1 |= DMA_DSR_BCR_BCR(64);
@@ -195,7 +194,6 @@ void DMA1_IRQHandler( void )
 	BLUE_TOGGLE;
 	DMA_DSR_BCR1 |= DMA_DSR_BCR_DONE_MASK;
 	upper_half_full = 1;
-	lower_half_full = 0;
 	/* Configure DMA to be ready for next interrupt */
 	DMA_DSR_BCR0 |= DMA_DSR_BCR_BCR(64);
 	DMA_DSR_BCR1 |= DMA_DSR_BCR_BCR(64);

@@ -79,8 +79,8 @@ int main( void )
 			{
 				upper = (uint16_t)((*( (uint32_t*)i )) >> 16);
 				lower = (uint16_t)((*( (uint32_t*)i )) & 0x0000ffff);
-				char tmp[50];
-				sprintf( tmp, "upper [0x%x]\r\nlower [0x%x]\r\n", upper, lower );
+				char tmp[100];
+				sprintf( tmp, "Buffer[1]	upper [0x%x]\r\n	lower [0x%x]\r\n", upper, lower );
 				int i = 0;
 				while( tmp[i] != '\0' )
 				{
@@ -98,13 +98,14 @@ int main( void )
 				{
 					peak_level = DMA_ALPHA_SHIFT(peak_level);
 				}
-				sprintf( tmp, "PK = %d\n\r", peak_level );
+				sprintf( tmp, "Buffer[1]	PK = %d\n\r", peak_level );
 				while( tmp[i] != '\0' )
 				{
 					uart_tx_char( tmp[i] );
 					i++;
 				}
 			}
+			lower_half_full = 0;
 		}
 		while( upper_half_full )
 		{
@@ -115,8 +116,8 @@ int main( void )
 			{
 				upper = (uint16_t)((*( (uint32_t*)i )) >> 16);
 				lower = (uint16_t)((*( (uint32_t*)i )) & 0x0000ffff);
-				char tmp[50];
-				sprintf( tmp, "upper [0x%x]\r\nlower [0x%x]\r\n", upper, lower );
+				char tmp[100];
+				sprintf( tmp, "Buffer[2]	upper [0x%x]\r\n	lower [0x%x]\r\n", upper, lower );
 				int i = 0;
 				while( tmp[i] != '\0' )
 				{
@@ -134,13 +135,14 @@ int main( void )
 				{
 					peak_level = DMA_ALPHA_SHIFT(peak_level);
 				}
-				sprintf( tmp, "PK = %d\n\r", peak_level );
+				sprintf( tmp, "Buffer[2]	PK = %d\n\r", peak_level );
 				while( tmp[i] != '\0' )
 				{
 					uart_tx_char( tmp[i] );
 					i++;
 				}
 			}
+			upper_half_full = 0;
 		}
 #endif
 	}
