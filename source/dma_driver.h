@@ -12,11 +12,17 @@
 #include "settings.h"
 #include <stdint.h>
 
-#define DMA_ENTRY_SIZE	(sizeof(uint16_t))
-#define DMA_ENTRIES			(64)
-#define DMA_BUFFER_SIZE (DMA_ENTRIES * DMA_ENTRY_SIZE)
+#define DMA_BUFFER_SIZE			(128)
+#define DMA_ALPHA_SHIFT(x) 	(x >> 1)
 
-#define DMA_ALPHA_SHIFT(x) (x >> 1)
+typedef struct
+{
+#if _DUAL_BUFFER_ == 1
+	uint16_t lower_half_full;
+	uint16_t upper_half_full;
+#endif
+	uint16_t buffer[DMA_BUFFER_SIZE];
+} dma_buffer_s;
 
 /* Configure DMA for ADC Operation
  * @param[in]:	void

@@ -9,5 +9,5 @@
 #define SETTINGS_H_
 
 #define _NON_BLOCKING_		0
-
+#define _DUAL_BUFFER_		0
 #endif /* SETTINGS_H_ */

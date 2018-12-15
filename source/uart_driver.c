@@ -68,7 +68,7 @@ void uart_init( void  )
 	/* Enable receiver and transmitter */
 	UART0_C2 	|= (UART0_C2_RE_MASK | UART0_C2_TE_MASK);
 
-#ifdef _NON_BLOCKING_
+#if _NON_BLOCKING_ == 1
 	/* Enable Interrupts */
 		UART0_C2 |= (UART0_C2_RIE_MASK | UART0_C2_TIE_MASK);
 #endif
@@ -111,7 +111,7 @@ void write( char* p_message )
 	return;
 }
 
-#ifdef _NON_BLOCKING_
+#if _NON_BLOCKING_ == 1
 /* UART0 interrupt handler */
 void UART0_IRQHandler( void )
 {
