@@ -11,12 +11,12 @@
 #include "LED.h"
 #include "gpio.h"
 #include <stdio.h>
+#include "limits.h"
 
 #if _DUAL_BUFFER_ == 1
-extern void* buffer;
-extern volatile uint8_t lower_half_full;
-extern volatile uint8_t upper_half_full;
+extern dma_buffer_s* dma_buffer;
 #endif
+
 
 int main( void )
 {
@@ -45,11 +45,8 @@ int main( void )
 	write( "DMA is initialized\r\n" );
 #if _DUAL_BUFFER_ == 1
 	NVIC_EnableIRQ( DMA1_IRQn );
-	uint32_t destination_end = 0;
-	uint32_t destination_start = 0;
-	uint32_t upper = 0;
-	uint32_t lower = 0;
-	static uint16_t peak_level = 0;
+	uint16_t entry = 0;
+	int16_t peak_level = 0;
 #endif
 
 	/* ADC0 Init */
@@ -71,78 +68,75 @@ int main( void )
 		while(!(ADC0_SC1A & 0x80)) { } /* wait for COCO */
 
 #if _DUAL_BUFFER_ == 1
-		while( lower_half_full )
+		while( 1 == dma_buffer->lower_half_full )
 		{
-			destination_end = (uint32_t)&buffer + DMA_BUFFER_SIZE/2;
-
-			for( int i = (uint32_t)&buffer; i < destination_end; i += 4 )
+			for( int i = 0; i < DMA_BUFFER_SIZE/2; i++ )
 			{
-				upper = (uint16_t)((*( (uint32_t*)i )) >> 16);
-				lower = (uint16_t)((*( (uint32_t*)i )) & 0x0000ffff);
+				entry = (uint16_t)(dma_buffer->buffer[i] );
+
 				char tmp[100];
-				sprintf( tmp, "Buffer[1]	upper [0x%x]\r\n	lower [0x%x]\r\n", upper, lower );
-				int i = 0;
-				while( tmp[i] != '\0' )
+				sprintf( tmp, "Buffer[1]	entry [0x%x]\r\n", entry );
+
+				int j = 0;
+				while( tmp[j] != '\0' )
 				{
-					uart_tx_char( tmp[i] );
-					i++;
+					uart_tx_char( tmp[j] );
+					j++;
 				}
-				i = 0;
+				j = 0;
 				/* Peak-level Calculation */
-				if( (((upper >> 15 | 1) * upper) > peak_level) |
-					(((lower >> 15 | 1) * lower) > peak_level ))
+				if( ((entry >> 15 | 1) * entry) > peak_level )
 				{
-					peak_level++;
+					if( SHRT_MAX != peak_level )
+						peak_level++;
 				}
 				else
 				{
 					peak_level = DMA_ALPHA_SHIFT(peak_level);
 				}
 				sprintf( tmp, "Buffer[1]	PK = %d\n\r", peak_level );
-				while( tmp[i] != '\0' )
+				while( tmp[j] != '\0' )
 				{
-					uart_tx_char( tmp[i] );
-					i++;
+					uart_tx_char( tmp[j] );
+					j++;
 				}
 			}
-			lower_half_full = 0;
+			dma_buffer->lower_half_full = 0;
 		}
-		while( upper_half_full )
+		while( 1 == dma_buffer->upper_half_full )
 		{
-			destination_start = (uint32_t)&buffer + DMA_BUFFER_SIZE/2;
-			destination_end = destination_start + DMA_BUFFER_SIZE/2;
-
-			for( int i = destination_start; i < destination_end; i += 4 )
+			for( int i = DMA_BUFFER_SIZE/2; i < DMA_BUFFER_SIZE; i++ )
 			{
-				upper = (uint16_t)((*( (uint32_t*)i )) >> 16);
-				lower = (uint16_t)((*( (uint32_t*)i )) & 0x0000ffff);
+				entry = (uint16_t)(dma_buffer->buffer[i] );
 				char tmp[100];
-				sprintf( tmp, "Buffer[2]	upper [0x%x]\r\n	lower [0x%x]\r\n", upper, lower );
-				int i = 0;
-				while( tmp[i] != '\0' )
+				sprintf( tmp, "Buffer[1]	entry [0x%x]\r\n", entry );
+
+				int j = 0;
+				while( tmp[j] != '\0' )
 				{
-					uart_tx_char( tmp[i] );
-					i++;
+					uart_tx_char( tmp[j] );
+					j++;
 				}
-				i = 0;
+				j = 0;
 				/* Peak-level Calculation */
-				if( (((upper >> 15 | 1) * upper) > peak_level) |
-					(((lower >> 15 | 1) * lower) > peak_level ))
+				if( ((entry >> 15 | 1) * entry) > peak_level )
+
 				{
-					peak_level++;
+					if( SHRT_MAX != peak_level )
+						peak_level++;
 				}
 				else
 				{
 					peak_level = DMA_ALPHA_SHIFT(peak_level);
 				}
 				sprintf( tmp, "Buffer[2]	PK = %d\n\r", peak_level );
-				while( tmp[i] != '\0' )
+				while( tmp[j] != '\0' )
 				{
-					uart_tx_char( tmp[i] );
-					i++;
+					uart_tx_char( tmp[j] );
+					j++;
 				}
 			}
-			upper_half_full = 0;
+			dma_buffer->upper_half_full = 0;
 		}
 #endif
 	}
